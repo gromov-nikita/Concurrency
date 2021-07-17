@@ -18,16 +18,24 @@ public class TellerManager implements Runnable {
             new LinkedList<Teller>();
     private int adjustmentPeriod;
     private static Random rand = new Random(47);
+
+    public PriorityQueue<Teller> getWorkingTellers() {
+        return workingTellers;
+    }
+
     public TellerManager(ExecutorService e,
-                         CustomerLine customers, int adjustmentPeriod) {
+                         CustomerLine customers, int adjustmentPeriod, int amount) {
         exec = e;
         this.customers = customers;
         this.adjustmentPeriod = adjustmentPeriod;
         // Start with a single teller:
-        Teller teller = new Teller(customers);
-        exec.execute(teller);
-        workingTellers.add(teller);
+        for(int i = 0; i < amount; i++) {
+            Teller teller = new Teller(customers);
+            exec.execute(teller);
+            workingTellers.add(teller);
+        }
     }
+
     public void adjustTellerNumber() {
         // This is actually a control system. By adjusting
         // the numbers, you can reveal stability issues in
@@ -43,11 +51,15 @@ public class TellerManager implements Runnable {
                 return;
             }
             // Else create (hire) a new teller
+      /*
             Teller teller = new Teller(customers);
             exec.execute(teller);
             workingTellers.add(teller);
             return;
+        */
         }
+/*
+
         // If line is short enough, remove a teller:
         if(workingTellers.size() > 1 &&
                 customers.size() / workingTellers.size() < 2)
@@ -56,7 +68,9 @@ public class TellerManager implements Runnable {
         if(customers.size() == 0)
             while(workingTellers.size() > 1)
                 reassignOneTeller();
+                */
     }
+
     // Give a teller a different job or a break:
     private void reassignOneTeller() {
         Teller teller = workingTellers.poll();
@@ -70,7 +84,7 @@ public class TellerManager implements Runnable {
                 adjustTellerNumber();
                 System.out.print(customers + " { ");
                 for(Teller teller : workingTellers)
-                    System.out.print(teller.shortString() + " ");
+                    System.out.print(teller.toString() + " ");
                 System.out.println("}");
             }
         } catch(InterruptedException e) {

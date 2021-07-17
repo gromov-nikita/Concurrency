@@ -5,7 +5,7 @@ import bankTeller.customers.CustomerLine;
 
 import java.util.concurrent.TimeUnit;
 
-class Teller implements Runnable, Comparable<Teller> {
+public class Teller implements Runnable, Comparable<Teller> {
     private static int counter = 0;
     private final int id = counter++;
     // Customers served during this shift:

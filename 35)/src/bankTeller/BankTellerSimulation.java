@@ -2,6 +2,7 @@ package bankTeller;
 
 import bankTeller.customers.CustomerGenerator;
 import bankTeller.customers.CustomerLine;
+import bankTeller.teller.Teller;
 import bankTeller.teller.TellerManager;
 
 import java.util.concurrent.ExecutorService;
@@ -16,11 +17,12 @@ public class BankTellerSimulation {
         // If line is too long, customers will leave:
         CustomerLine customers =
                 new CustomerLine(MAX_LINE_SIZE);
-        exec.execute(new CustomerGenerator(customers));
+        TellerManager meneger = new TellerManager(
+                exec, customers, ADJUSTMENT_PERIOD, 10);
+        exec.execute(new CustomerGenerator(customers, meneger));
         // Manager will add and remove tellers as necessary:
 
-        exec.execute(new TellerManager(
-                exec, customers, ADJUSTMENT_PERIOD));
+        exec.execute(meneger);
 
         if(args.length > 0) // Optional argument
             TimeUnit.SECONDS.sleep(new Integer(args[0]));
