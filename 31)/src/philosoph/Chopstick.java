@@ -11,6 +11,6 @@ public class Chopstick {
     }
     public synchronized void drop() {
         taken = false;
-        //notifyAll();
+        notifyAll();
     }
 }
